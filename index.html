@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vedam Granites - Multi-Sheet Calculator</title>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            font-size: 24px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: #eef2f5;
+            border-radius: 6px;
+        }
+        button {
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #004494;
+        }
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+        #exportBtn {
+            background-color: #28a745;
+            display: none;
+        }
+        #exportBtn:hover {
+            background-color: #218838;
+        }
+        #clearBtn {
+            background-color: #dc3545;
+            display: none;
+        }
+        #clearBtn:hover {
+            background-color: #c82333;
+        }
+        #status {
+            margin-top: 10px;
+            font-weight: bold;
+            color: #d9534f;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .total-row {
+            font-weight: bold;
+            background-color: #e2eef9;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            text-align: center;
+            border: 1px solid #0056b3;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        /* Hide spinner in number inputs */
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Vedam Granites - Calculator</h1>
+    
+    <div class="controls">
+        <label for="imageInput"><strong>Upload Measurement Sheets:</strong> (Select multiple)</label><br><br>
+        <input type="file" id="imageInput" accept="image/*" multiple>
+        <br>
+        <button id="processBtn" onclick="processImages()">Process Images</button>
+        <button id="exportBtn" onclick="exportToPDF()">Export to PDF</button>
+        <button id="clearBtn" onclick="clearData()">Clear Data</button>
+        <div id="status">Ready.</div>
+    </div>
+
+    <table id="resultsTable">
+        <thead>
+            <tr>
+                <th>Pcs (Row)</th>
+                <th>Length (in)</th>
+                <th>Width (in)</th>
+                <th>Area (Sq. Ft.)</th>
+            </tr>
+        </thead>
+        <tbody>
+            </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td colspan="3" style="text-align: right;">Total Square Feet:</td>
+                <td id="totalSqFt">0.00</td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<script>
+    // Keep a running global count of rows across multiple images
+    let globalRowCount = 1;
+
+    async function processImages() {
+        const imageInput = document.getElementById('imageInput');
+        const statusDiv = document.getElementById('status');
+        const processBtn = document.getElementById('processBtn');
+        const exportBtn = document.getElementById('exportBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        
+        if (!imageInput.files || imageInput.files.length === 0) {
+            alert('Please select at least one image.');
+            return;
+        }
+
+        const files = imageInput.files;
+        processBtn.disabled = true;
+        statusDiv.style.color = "#0056b3";
+
+        try {
+            // Process files sequentially to prevent browser crashing on mobile
+            for (let i = 0; i < files.length; i++) {
+                statusDiv.innerText = `Scanning image ${i + 1} of ${files.length}...`;
+                const result = await Tesseract.recognize(files[i], 'eng');
+                
+                statusDiv.innerText = `Processing data for image ${i + 1}...`;
+                parseDataAndAppend(result.data.text);
+            }
+            
+            statusDiv.innerText = "All images processed! You can edit fields below if needed.";
+            statusDiv.style.color = "#28a745";
+            
+            exportBtn.style.display = 'inline-block';
+            clearBtn.style.display = 'inline-block';
+
+        } catch (error) {
+            console.error(error);
+            statusDiv.innerText = "Error processing image: " + error.message;
+            statusDiv.style.color = "#d9534f";
+        } finally {
+            processBtn.disabled = false;
+            // Clear the file input so they can add more later without triggering duplicates easily
+            imageInput.value = ""; 
+        }
+    }
+
+    function parseDataAndAppend(text) {
+        const lines = text.split('\n');
+        const tbody = document.querySelector('#resultsTable tbody');
+        
+        let foundAny = false;
+
+        lines.forEach(line => {
+            const numbers = line.match(/\b\d+\b/g);
+            
+            if (numbers && numbers.length >= 2) {
+                const w = parseInt(numbers.pop(), 10);
+                const l = parseInt(numbers.pop(), 10);
+                
+                if (l > 0 && l < 1000 && w > 0 && w < 1000) {
+                    foundAny = true;
+                    const sqFt = (l * w) / 144;
+
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${globalRowCount++}</td>
+                        <td><input type="number" class="length-input" value="${l}" oninput="recalculate()"></td>
+                        <td><input type="number" class="width-input" value="${w}" oninput="recalculate()"></td>
+                        <td class="row-area">${sqFt.toFixed(2)}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            }
+        });
+
+        recalculate(); 
+    }
+
+    function recalculate() {
+        const rows = document.querySelectorAll('#resultsTable tbody tr');
+        let totalSqFt = 0;
+
+        rows.forEach(row => {
+            const lengthInput = row.querySelector('.length-input');
+            const widthInput = row.querySelector('.width-input');
+            const areaCell = row.querySelector('.row-area');
+
+            if (lengthInput && widthInput && areaCell) {
+                const l = parseFloat(lengthInput.value) || 0;
+                const w = parseFloat(widthInput.value) || 0;
+                
+                const sqFt = (l * w) / 144;
+                areaCell.innerText = sqFt.toFixed(2);
+                totalSqFt += sqFt;
+            }
+        });
+
+        document.getElementById('totalSqFt').innerText = totalSqFt.toFixed(2);
+    }
+
+    function clearData() {
+        if(confirm("Are you sure you want to clear all data?")) {
+            document.querySelector('#resultsTable tbody').innerHTML = '';
+            document.getElementById('totalSqFt').innerText = '0.00';
+            globalRowCount = 1;
+            
+            document.getElementById('status').innerText = 'Data cleared. Ready for new images.';
+            document.getElementById('status').style.color = '#333';
+            
+            document.getElementById('exportBtn').style.display = 'none';
+            document.getElementById('clearBtn').style.display = 'none';
+        }
+    }
+
+    function exportToPDF() {
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('p', 'mm', 'a4');
+
+        // --- PDF Header Setup ---
+        doc.setFontSize(22);
+        doc.setFont("helvetica", "bold");
+        doc.text("Vedam Granites", 14, 20);
+        
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.text("E30, RIICO Industrial Area, Baggad, Rajasthan 313331", 14, 28);
+        
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.text("GRANITE SHEET", 14, 40);
+        
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "normal");
+        const dateObj = new Date();
+        const dateString = dateObj.toISOString().split('T')[0];
+        doc.text(dateString, 14, 48);
+
+        // --- Data Processing for 3-Column Split ---
+        const rows = document.querySelectorAll('#resultsTable tbody tr');
+        let data = [];
+        
+        rows.forEach((row, index) => {
+            const lInput = row.querySelector('.length-input');
+            const wInput = row.querySelector('.width-input');
+            const areaCell = row.querySelector('.row-area');
+
+            if(lInput && wInput) {
+                const l = parseFloat(lInput.value) || 0;
+                const w = parseFloat(wInput.value) || 0;
+                const area = parseFloat(areaCell.innerText) || 0;
+                data.push({ pcs: index + 1, l: l, w: w, area: area });
+            }
+        });
+
+        if (data.length === 0) {
+            alert("No data to export!");
+            return;
+        }
+
+        const numItems = data.length;
+        const columnSize = Math.ceil(numItems / 3); 
+        
+        let tableBody = [];
+        let colTotals = [0, 0, 0];
+
+        // Reconstruct the array to read left-to-right across the 3 vertical blocks
+        for (let i = 0; i < columnSize; i++) {
+            let rowData = [];
+            for (let block = 0; block < 3; block++) {
+                let dataIndex = i + (block * columnSize);
+                
+                if (dataIndex < numItems) {
+                    let item = data[dataIndex];
+                    rowData.push(item.pcs, item.l, item.w, item.area.toFixed(2));
+                    colTotals[block] += item.area;
+                } else {
+                    rowData.push("", "", "", ""); // Pad empty cells for unbalanced columns
+                }
+            }
+            tableBody.push(rowData);
+        }
+
+        // Add "Col Total" row at the very end
+        tableBody.push([
+            "Col Total", "", "", colTotals[0].toFixed(2),
+            "Col Total", "", "", colTotals[1].toFixed(2),
+            "Col Total", "", "", colTotals[2].toFixed(2)
+        ]);
+
+        // --- Render Table ---
+        doc.autoTable({
+            startY: 55,
+            head: [['Pcs', 'L', 'W', 'Area', 'Pcs', 'L', 'W', 'Area', 'Pcs', 'L', 'W', 'Area']],
+            body: tableBody,
+            theme: 'grid',
+            headStyles: { 
+                fillColor: [240, 240, 240], 
+                textColor: [0, 0, 0],
+                fontStyle: 'bold',
+                halign: 'center' 
+            },
+            bodyStyles: {
+                halign: 'center'
+            },
+            willDrawCell: function(data) {
+                if (data.row.index === tableBody.length - 1) {
+                    doc.setFont("helvetica", "bold");
+                    doc.setFillColor(245, 245, 245);
+                }
+            }
+        });
+
+        // --- Render the Final TOTAL ---
+        let finalTotalArea = colTotals[0] + colTotals[1] + colTotals[2];
+        const finalY = doc.lastAutoTable.finalY + 15;
+        
+        // Check if we need a new page for the final total to avoid printing off the bottom
+        if (finalY > 270) {
+            doc.addPage();
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("TOTAL", 14, 20);
+            doc.text(`${finalTotalArea.toFixed(3)} feet2`, 14, 28);
+        } else {
+            doc.setFontSize(14);
+            doc.setFont("helvetica", "bold");
+            doc.text("TOTAL", 14, finalY);
+            doc.text(`${finalTotalArea.toFixed(3)} feet2`, 14, finalY + 8);
+        }
+
+        // --- Save Document ---
+        doc.save("Vedam_Granites_Measurement_Sheet.pdf");
+    }
+</script>
+
+</body>
+</html>
