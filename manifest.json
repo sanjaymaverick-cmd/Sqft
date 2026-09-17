@@ -1,0 +1,17 @@
+{
+  "name": "Vedam SqFt",
+  "short_name": "Vedam SqFt",
+  "description": "Scan granite measurement sheets in inches or feet and total square feet.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#1c1917",
+  "theme_color": "#1c1917",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
