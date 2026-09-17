@@ -1,445 +1,105 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vedam Granites — Sq Ft Calculator</title>
-    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
-    <style>
-        :root {
-            --ink: #1c1917;
-            --muted: #57534e;
-            --line: #e7e5e4;
-            --paper: #fff;
-            --bg: #f5f0eb;
-            --accent: #9a3412;
-            --accent-2: #1d4ed8;
-            --ok: #15803d;
-            --warn: #b45309;
-            --danger: #b91c1c;
-        }
-        * { box-sizing: border-box; }
-        body {
-            font-family: "Segoe UI", Arial, sans-serif;
-            max-width: 980px;
-            margin: 0 auto;
-            padding: 16px;
-            background: var(--bg);
-            color: var(--ink);
-        }
-        .container {
-            background: var(--paper);
-            padding: 18px;
-            border-radius: 12px;
-            box-shadow: 0 8px 24px rgba(28, 25, 23, 0.08);
-        }
-        h1 { font-size: 22px; margin: 0 0 4px; }
-        .sub { color: var(--muted); font-size: 13px; margin-bottom: 16px; }
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        @media (max-width: 700px) {
-            .grid { grid-template-columns: 1fr; }
-        }
-        label { font-size: 13px; font-weight: 600; display: block; margin-bottom: 4px; }
-        input[type="text"], input[type="file"], select, input[type="number"] {
-            width: 100%;
-            padding: 8px 10px;
-            border: 1px solid #d6d3d1;
-            border-radius: 6px;
-            font-size: 15px;
-        }
-        .controls {
-            margin-bottom: 16px;
-            padding: 14px;
-            background: #fafaf9;
-            border: 1px solid var(--line);
-            border-radius: 10px;
-        }
-        .btn-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-        button {
-            background: var(--accent-2);
-            color: #fff;
-            border: none;
-            padding: 10px 14px;
-            cursor: pointer;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-        button:hover { filter: brightness(0.95); }
-        button:disabled { background: #a8a29e; cursor: not-allowed; }
-        #exportBtn { background: var(--ok); }
-        #clearBtn { background: var(--danger); }
-        #addBtn { background: #44403c; }
-        #status { margin-top: 10px; font-weight: 600; color: var(--muted); min-height: 1.2em; }
-        .hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 8px; }
-        th, td { border: 1px solid var(--line); padding: 7px; text-align: center; }
-        th { background: #f5f5f4; font-size: 12px; }
-        td input[type="number"] {
-            width: 72px;
-            padding: 6px 4px;
-            text-align: center;
-            font-weight: 700;
-            border-color: #a8a29e;
-        }
-        td select { width: 72px; padding: 6px 2px; font-size: 13px; }
-        td input.qty { width: 52px; }
-        .total-box {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 12px;
-            margin-top: 14px;
-            padding: 14px 16px;
-            background: #1c1917;
-            color: #fafaf9;
-            border-radius: 10px;
-        }
-        .total-box strong { font-size: 28px; letter-spacing: 0.02em; }
-        .ocr {
-            margin-top: 14px;
-            background: #fff7ed;
-            border: 1px solid #fed7aa;
-            border-radius: 8px;
-            padding: 10px 12px;
-            display: none;
-        }
-        .ocr pre {
-            white-space: pre-wrap;
-            font-size: 12px;
-            max-height: 180px;
-            overflow: auto;
-            margin: 8px 0 0;
-        }
-        .del {
-            background: transparent;
-            color: var(--danger);
-            padding: 4px 8px;
-            font-size: 16px;
-            line-height: 1;
-        }
-        input[type=number]::-webkit-inner-spin-button,
-        input[type=number]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-        .wrap { overflow-x: auto; }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vedam Granites — Sq Ft Calculator</title>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+<style>
+:root{--ink:#1c1917;--muted:#57534e;--line:#e7e5e4;--paper:#fff;--bg:#f5f0eb;--accent-2:#1d4ed8;--ok:#15803d;--danger:#b91c1c}
+*{box-sizing:border-box}body{font-family:"Segoe UI",Arial,sans-serif;max-width:980px;margin:0 auto;padding:16px;background:var(--bg);color:var(--ink)}
+.container{background:var(--paper);padding:18px;border-radius:12px;box-shadow:0 8px 24px rgba(28,25,23,.08)}
+h1{font-size:22px;margin:0 0 4px}.sub{color:var(--muted);font-size:13px;margin-bottom:16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}@media(max-width:700px){.grid{grid-template-columns:1fr}}
+label{font-size:13px;font-weight:600;display:block;margin-bottom:4px}
+input[type=text],input[type=file],select,input[type=number]{width:100%;padding:8px 10px;border:1px solid #d6d3d1;border-radius:6px;font-size:15px}
+.controls{margin-bottom:16px;padding:14px;background:#fafaf9;border:1px solid var(--line);border-radius:10px}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+button{background:var(--accent-2);color:#fff;border:none;padding:10px 14px;cursor:pointer;border-radius:6px;font-size:14px}
+button:disabled{background:#a8a29e}#exportBtn{background:var(--ok)}#clearBtn{background:var(--danger)}#addBtn{background:#44403c}
+#status{margin-top:10px;font-weight:600;color:var(--muted);min-height:1.2em}.hint{font-size:12px;color:var(--muted);margin-top:6px}
+table{width:100%;border-collapse:collapse;margin-top:8px}th,td{border:1px solid var(--line);padding:7px;text-align:center}th{background:#f5f5f4;font-size:12px}
+td input[type=number]{width:72px;padding:6px 4px;text-align:center;font-weight:700}td select{width:72px;padding:6px 2px;font-size:13px}td input.qty{width:52px}
+.total-box{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:14px;padding:14px 16px;background:#1c1917;color:#fafaf9;border-radius:10px}
+.total-box strong{font-size:28px}.ocr{margin-top:14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:8px;padding:10px 12px;display:none}
+.ocr pre{white-space:pre-wrap;font-size:12px;max-height:180px;overflow:auto;margin:8px 0 0}
+.del{background:transparent;color:var(--danger);padding:4px 8px;font-size:16px}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}.wrap{overflow-x:auto}
+</style>
 </head>
 <body>
 <div class="container">
-    <h1>Vedam Granites — Sq Ft Calculator</h1>
-    <p class="sub">Scan handwritten measurement sheets in inches or feet. Every row converts to square feet.</p>
-    <div class="controls">
-        <div class="grid">
-            <div>
-                <label for="customer">Customer / Lot (optional)</label>
-                <input type="text" id="customer" placeholder="Name, lot, or colour">
-            </div>
-            <div>
-                <label for="unitMode">Sheet unit for new rows</label>
-                <select id="unitMode">
-                    <option value="auto" selected>Auto (read sheet, then guess)</option>
-                    <option value="in">Force inches</option>
-                    <option value="ft">Force feet</option>
-                </select>
-            </div>
-        </div>
-        <div style="margin-top:12px">
-            <label for="imageInput">Upload measurement sheets (one or many photos)</label>
-            <input type="file" id="imageInput" accept="image/*" multiple>
-        </div>
-        <div class="btn-row">
-            <button id="processBtn" onclick="processImages()">Scan images</button>
-            <button id="addBtn" onclick="addRow(1, '', '', 'in')">Add row</button>
-            <button id="exportBtn" onclick="exportToPDF()">Export PDF</button>
-            <button id="clearBtn" onclick="clearData()">Clear</button>
-        </div>
-        <div id="status">Ready. Photograph the sheet straight-on, one column at a time if the writing is tight.</div>
-        <p class="hint">
-            Reads lines such as <code>72 x 36</code>, <code>72" × 36"</code>, <code>6 x 3 ft</code>, <code>6'6" x 3'2"</code>, or two numbers on a line.
-            Area rule: inches → (L × W) / 144 · feet → L × W.
-        </p>
-    </div>
-    <div class="wrap">
-        <table id="resultsTable">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Qty</th>
-                    <th>Length</th>
-                    <th>Width</th>
-                    <th>Unit</th>
-                    <th>Area (sq ft)</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-    </div>
-    <div class="total-box">
-        <div>
-            <div style="font-size:12px;opacity:.75">TOTAL SQUARE FEET</div>
-            <div id="rowMeta" style="font-size:12px;opacity:.75">0 pieces</div>
-        </div>
-        <strong id="totalSqFt">0.00</strong>
-    </div>
-    <div class="ocr" id="ocrBox">
-        <strong>Raw OCR (check missed rows here)</strong>
-        <pre id="ocrText"></pre>
-    </div>
+<h1>Vedam Granites — Sq Ft Calculator</h1>
+<p class="sub">Scan handwritten measurement sheets in inches or feet. Every row converts to square feet.</p>
+<div class="controls">
+<div class="grid">
+<div><label for="customer">Customer / Lot (optional)</label><input type="text" id="customer" placeholder="Name, lot, or colour"></div>
+<div><label for="unitMode">Sheet unit for new rows</label>
+<select id="unitMode">
+<option value="auto" selected>Auto (read sheet, then guess)</option>
+<option value="in">Force inches</option>
+<option value="ft">Force feet</option>
+</select></div>
+</div>
+<div style="margin-top:12px"><label for="imageInput">Upload measurement sheets (one or many photos)</label>
+<input type="file" id="imageInput" accept="image/*" multiple></div>
+<div class="btn-row">
+<button id="processBtn" onclick="processImages()">Scan images</button>
+<button id="addBtn" onclick="addRow(1,'','','in')">Add row</button>
+<button id="exportBtn" onclick="exportToPDF()">Export PDF</button>
+<button id="clearBtn" onclick="clearData()">Clear</button>
+</div>
+<div id="status">Ready. Photograph the sheet straight-on, one column at a time if the writing is tight.</div>
+<p class="hint">Reads <code>72 x 36</code>, <code>6 x 3 ft</code>, <code>6'6" x 3'2"</code>. A lone <code>"</code>, <code>do</code>, or OCR <code>11</code> under a column is <strong>ditto</strong> (same as the row above), not 11×11. Area: inches → (L × W) / 144 · feet → L × W.</p>
+</div>
+<div class="wrap"><table id="resultsTable"><thead><tr><th>#</th><th>Qty</th><th>Length</th><th>Width</th><th>Unit</th><th>Area (sq ft)</th><th></th></tr></thead><tbody></tbody></table></div>
+<div class="total-box"><div><div style="font-size:12px;opacity:.75">TOTAL SQUARE FEET</div><div id="rowMeta" style="font-size:12px;opacity:.75">0 pieces</div></div><strong id="totalSqFt">0.00</strong></div>
+<div class="ocr" id="ocrBox"><strong>Raw OCR (check missed rows here)</strong><pre id="ocrText"></pre></div>
 </div>
 <script>
-    let globalRowCount = 1;
-    let rawOcrLog = [];
-    function normalizeText(text) {
-        return String(text || "")
-            .replace(/[×✕✖✗✘]/g, "x")
-            .replace(/[–—−]/g, "-")
-            .replace(/[‘’′]/g, "'")
-            .replace(/[“”″]/g, '"')
-            .replace(/inch(?:es)?/ig, "in")
-            .replace(/feet|foot|ft\b/ig, "ft");
-    }
-    function feetInchToInches(ft, inch) {
-        return (Number(ft) || 0) * 12 + (Number(inch) || 0);
-    }
-    function guessUnit(l, w, hinted, mode) {
-        if (mode === "in" || mode === "ft") return mode;
-        if (hinted === "in" || hinted === "ft") return hinted;
-        const max = Math.max(l, w);
-        const min = Math.min(l, w);
-        if (max >= 24) return "in";
-        if (max <= 16 && min >= 1) return "ft";
-        return "in";
-    }
-    function parseMeasurementLine(line, mode) {
-        const raw = normalizeText(line);
-        if (!raw.trim()) return null;
-        if (/total|sq\.?\s*ft|square|sheet|page|date|vedam|granite|length|width|area|s\.?\s*no/i.test(raw) && !/\d/.test(raw)) {
-            return null;
-        }
-        let qty = 1;
-        const qtyMatch = raw.match(/^\s*(\d+)\s*(?:pcs?|pieces?|nos?|nos)\b\s*/i);
-        let work = raw;
-        if (qtyMatch && Number(qtyMatch[1]) > 0 && Number(qtyMatch[1]) <= 50) {
-            qty = Number(qtyMatch[1]);
-            work = raw.slice(qtyMatch[0].length);
-        }
-        const fiGlobal = work.match(/(\d+)\s*'\s*(\d+(?:\.\d+)?)?\s*"?\s*[xX]\s*(\d+)\s*'\s*(\d+(?:\.\d+)?)?\s*"?/);
-        if (fiGlobal) {
-            const l = feetInchToInches(fiGlobal[1], fiGlobal[2] || 0);
-            const w = feetInchToInches(fiGlobal[3], fiGlobal[4] || 0);
-            if (l > 0 && w > 0) return { qty, l, w, unit: "in" };
-        }
-        const pair = work.match(/(\d+(?:\.\d+)?)\s*(in|ft|'|")?\s*[xX]\s*(\d+(?:\.\d+)?)\s*(in|ft|'|")?/);
-        if (pair) {
-            let l = Number(pair[1]);
-            let w = Number(pair[3]);
-            const hinted = pair[2] === "in" || pair[4] === "in" ? "in" : (pair[2] === "ft" || pair[4] === "ft" || /\bft\b/i.test(work) ? "ft" : (/\bin\b|"/.test(work) ? "in" : null));
-            if (pair[2] === "'") l = feetInchToInches(pair[1], 0);
-            if (pair[4] === "'") w = feetInchToInches(pair[3], 0);
-            const unit = (pair[2] === "'" || pair[4] === "'") ? "in" : guessUnit(l, w, hinted, mode);
-            if (l > 0 && w > 0 && l < 400 && w < 400) return { qty, l, w, unit };
-        }
-        const nums = [];
-        const re = /(\d+)\s*'\s*(\d+(?:\.\d+)?)?\s*"?|(\d+(?:\.\d+)?)\s*(in|ft|")?/g;
-        let m;
-        while ((m = re.exec(work)) !== null) {
-            if (m[1] != null) nums.push({ value: feetInchToInches(m[1], m[2] || 0), unit: "in" });
-            else nums.push({ value: Number(m[3]), unit: m[4] === '"' ? "in" : (m[4] || null) });
-        }
-        if (nums.length >= 2) {
-            let a, b;
-            if (nums.length >= 3 && nums[0].value <= 80 && nums[1].value >= 8 && nums[2].value >= 8) {
-                a = nums[1]; b = nums[2];
-            } else {
-                a = nums[nums.length - 2]; b = nums[nums.length - 1];
-            }
-            const hinted = a.unit || b.unit || (/\bft\b/i.test(work) ? "ft" : null);
-            const unit = guessUnit(a.value, b.value, hinted, mode);
-            if (a.value > 0 && b.value > 0 && a.value < 400 && b.value < 400) {
-                return { qty, l: a.value, w: b.value, unit };
-            }
-        }
-        return null;
-    }
-    function rowArea(qty, l, w, unit) {
-        qty = Number(qty) || 0; l = Number(l) || 0; w = Number(w) || 0;
-        const one = unit === "ft" ? (l * w) : (l * w) / 144;
-        return qty * one;
-    }
-    function addRow(qty, l, w, unit) {
-        const tbody = document.querySelector("#resultsTable tbody");
-        const tr = document.createElement("tr");
-        const n = globalRowCount++;
-        tr.innerHTML = `
-            <td class="row-no">${n}</td>
-            <td><input type="number" class="qty" min="1" step="1" value="${qty || 1}" oninput="recalculate()"></td>
-            <td><input type="number" class="length-input" min="0" step="0.01" value="${l}" oninput="recalculate()"></td>
-            <td><input type="number" class="width-input" min="0" step="0.01" value="${w}" oninput="recalculate()"></td>
-            <td>
-                <select class="unit-input" onchange="recalculate()">
-                    <option value="in"${unit === "in" ? " selected" : ""}>in</option>
-                    <option value="ft"${unit === "ft" ? " selected" : ""}>ft</option>
-                </select>
-            </td>
-            <td class="row-area">0.00</td>
-            <td><button class="del" onclick="deleteRow(this)" title="Remove">×</button></td>
-        `;
-        tbody.appendChild(tr);
-        recalculate();
-    }
-    function deleteRow(btn) {
-        btn.closest("tr").remove();
-        renumber();
-        recalculate();
-    }
-    function renumber() {
-        document.querySelectorAll("#resultsTable tbody tr").forEach((row, i) => {
-            row.querySelector(".row-no").textContent = i + 1;
-        });
-        globalRowCount = document.querySelectorAll("#resultsTable tbody tr").length + 1;
-    }
-    function parseDataAndAppend(text) {
-        const mode = document.getElementById("unitMode").value;
-        const lines = normalizeText(text).split(/\n+/);
-        let found = 0;
-        lines.forEach((line) => {
-            const parsed = parseMeasurementLine(line, mode);
-            if (!parsed) return;
-            addRow(parsed.qty, +parsed.l.toFixed(2), +parsed.w.toFixed(2), parsed.unit);
-            found++;
-        });
-        return found;
-    }
-    function recalculate() {
-        const rows = document.querySelectorAll("#resultsTable tbody tr");
-        let total = 0; let pieces = 0;
-        rows.forEach((row) => {
-            const qty = parseFloat(row.querySelector(".qty").value) || 0;
-            const l = parseFloat(row.querySelector(".length-input").value) || 0;
-            const w = parseFloat(row.querySelector(".width-input").value) || 0;
-            const unit = row.querySelector(".unit-input").value;
-            const area = rowArea(qty, l, w, unit);
-            row.querySelector(".row-area").textContent = area.toFixed(2);
-            total += area; pieces += qty;
-        });
-        document.getElementById("totalSqFt").textContent = total.toFixed(2);
-        document.getElementById("rowMeta").textContent =
-            `${rows.length} line${rows.length === 1 ? "" : "s"} · ${pieces} piece${pieces === 1 ? "" : "s"}`;
-    }
-    async function processImages() {
-        const imageInput = document.getElementById("imageInput");
-        const statusDiv = document.getElementById("status");
-        const processBtn = document.getElementById("processBtn");
-        if (!imageInput.files || imageInput.files.length === 0) {
-            alert("Select at least one photo of a measurement sheet.");
-            return;
-        }
-        const files = Array.from(imageInput.files);
-        processBtn.disabled = true;
-        statusDiv.style.color = "#1d4ed8";
-        let added = 0;
-        try {
-            for (let i = 0; i < files.length; i++) {
-                statusDiv.textContent = `Scanning image ${i + 1} of ${files.length}…`;
-                const result = await Tesseract.recognize(files[i], "eng");
-                const text = result.data.text || "";
-                rawOcrLog.push(`--- Image ${i + 1}: ${files[i].name} ---\n${text}`);
-                statusDiv.textContent = `Reading numbers from image ${i + 1}…`;
-                added += parseDataAndAppend(text);
-            }
-            document.getElementById("ocrText").textContent = rawOcrLog.join("\n\n");
-            document.getElementById("ocrBox").style.display = "block";
-            statusDiv.style.color = added ? "#15803d" : "#b45309";
-            statusDiv.textContent = added
-                ? `Done. Added ${added} row(s). Correct any missed L / W / unit below.`
-                : "Scan finished but no L × W pairs were found. Add rows by hand or check Raw OCR.";
-        } catch (err) {
-            console.error(err);
-            statusDiv.style.color = "#b91c1c";
-            statusDiv.textContent = "Error reading image: " + err.message;
-        } finally {
-            processBtn.disabled = false;
-            imageInput.value = "";
-        }
-    }
-    function clearData() {
-        if (!confirm("Clear all rows and OCR text?")) return;
-        document.querySelector("#resultsTable tbody").innerHTML = "";
-        globalRowCount = 1;
-        rawOcrLog = [];
-        document.getElementById("ocrText").textContent = "";
-        document.getElementById("ocrBox").style.display = "none";
-        document.getElementById("status").textContent = "Cleared. Ready for new sheets.";
-        document.getElementById("status").style.color = "#57534e";
-        recalculate();
-    }
-    function istDateString() {
-        return new Intl.DateTimeFormat("en-CA", {
-            timeZone: "Asia/Kolkata", year: "numeric", month: "2-digit", day: "2-digit"
-        }).format(new Date());
-    }
-    function collectRows() {
-        const rows = [];
-        document.querySelectorAll("#resultsTable tbody tr").forEach((row, index) => {
-            const qty = parseFloat(row.querySelector(".qty").value) || 0;
-            const l = parseFloat(row.querySelector(".length-input").value) || 0;
-            const w = parseFloat(row.querySelector(".width-input").value) || 0;
-            const unit = row.querySelector(".unit-input").value;
-            rows.push({ pcs: index + 1, qty, l, w, unit, area: rowArea(qty, l, w, unit) });
-        });
-        return rows;
-    }
-    function exportToPDF() {
-        const data = collectRows();
-        if (!data.length) {
-            alert("No rows to export. Scan a sheet or add a row first.");
-            return;
-        }
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF("p", "mm", "a4");
-        const customer = document.getElementById("customer").value.trim();
-        doc.setFont("helvetica", "bold"); doc.setFontSize(20);
-        doc.text("Vedam Granites", 14, 18);
-        doc.setFont("helvetica", "normal"); doc.setFontSize(10);
-        doc.text("E30, RIICO Industrial Area, Baggad, Rajasthan 313331", 14, 25);
-        doc.setFont("helvetica", "bold"); doc.setFontSize(13);
-        doc.text("GRANITE MEASUREMENT SHEET", 14, 35);
-        doc.setFont("helvetica", "normal"); doc.setFontSize(11);
-        doc.text(istDateString(), 14, 42);
-        if (customer) doc.text(customer, 14, 48);
-        const body = data.map((r) => [r.pcs, r.qty, r.l, r.w, r.unit, r.area.toFixed(2)]);
-        const total = data.reduce((s, r) => s + r.area, 0);
-        const pieces = data.reduce((s, r) => s + r.qty, 0);
-        body.push(["", pieces, "", "", "TOTAL", total.toFixed(2)]);
-        doc.autoTable({
-            startY: customer ? 54 : 52,
-            head: [["#", "Qty", "L", "W", "Unit", "Area sq.ft"]],
-            body, theme: "grid",
-            headStyles: { fillColor: [28, 25, 23], textColor: 255, halign: "center" },
-            bodyStyles: { halign: "center" },
-            didParseCell: function (hook) {
-                if (hook.section === "body" && hook.row.index === body.length - 1) {
-                    hook.cell.styles.fontStyle = "bold";
-                    hook.cell.styles.fillColor = [231, 229, 228];
-                }
-            }
-        });
-        const y = doc.lastAutoTable.finalY + 14;
-        const drawY = y > 270 ? (doc.addPage(), 20) : y;
-        doc.setFont("helvetica", "bold"); doc.setFontSize(14);
-        doc.text("TOTAL", 14, drawY);
-        doc.text(`${total.toFixed(2)} sq.ft`, 14, drawY + 8);
-        const safeName = (customer || "sheet").replace(/[^\w\-]+/g, "_").slice(0, 40);
-        doc.save(`Vedam_Granites_${safeName}_${istDateString()}.pdf`);
-    }
+let globalRowCount=1,rawOcrLog=[];
+function normalizeText(text){return String(text||"").replace(/[×✕✖✗✘]/g,"x").replace(/[–—−]/g,"-").replace(/[‘’′]/g,"'").replace(/[“”″]/g,'"').replace(/inch(?:es)?/ig,"in").replace(/feet|foot|ft\b/ig,"ft")}
+function feetInchToInches(ft,inch){return (Number(ft)||0)*12+(Number(inch)||0)}
+function guessUnit(l,w,hinted,mode){if(mode==="in"||mode==="ft")return mode;if(hinted==="in"||hinted==="ft")return hinted;const max=Math.max(l,w),min=Math.min(l,w);if(max>=24)return"in";if(max<=16&&min>=1)return"ft";return"in"}
+function isFullDittoLine(text){return /^(["'″〃]{1,4}|do+|ditto|-do-|same|11|11\s*[xX]\s*11|11\s+11)$/i.test(String(text||"").trim())}
+function copyPrev(prev,qty){if(!prev)return null;return{qty:qty||prev.qty||1,l:prev.l,w:prev.w,unit:prev.unit,ditto:true}}
+function parseMeasurementLine(line,mode,prev){
+ const raw=normalizeText(line);if(!raw.trim())return null;
+ if(/total|sq\.?\s*ft|square|sheet|page|date|vedam|granite|length|width|area|s\.?\s*no/i.test(raw)&&!/\d/.test(raw)&&!isFullDittoLine(raw))return null;
+ let qty=1,work=raw;
+ const qtyMatch=raw.match(/^\s*(\d+)\s*(?:pcs?|pieces?|nos?|nos)\b\s*/i);
+ if(qtyMatch&&Number(qtyMatch[1])>0&&Number(qtyMatch[1])<=50){qty=Number(qtyMatch[1]);work=raw.slice(qtyMatch[0].length)}
+ if(isFullDittoLine(work)||isFullDittoLine(raw))return copyPrev(prev,qty);
+ if(prev){
+  const dittoPair=work.match(/^\s*(["'″〃]+|11|do+)\s*[xX]?\s*(\d+(?:\.\d+)?)?\s*(in|ft)?\s*$/i);
+  const dittoPair2=work.match(/^\s*(\d+(?:\.\d+)?)\s*(in|ft)?\s*[xX]\s*(["'″〃]+|11|do+)\s*$/i);
+  if(dittoPair&&!dittoPair[2])return copyPrev(prev,qty);
+  if(dittoPair&&dittoPair[2]){const w=Number(dittoPair[2]);if(w>0)return{qty,l:prev.l,w,unit:dittoPair[3]==="ft"?"ft":(dittoPair[3]==="in"?"in":prev.unit)}}
+  if(dittoPair2){const l=Number(dittoPair2[1]);if(l>0)return{qty,l,w:prev.w,unit:dittoPair2[2]==="ft"?"ft":(dittoPair2[2]==="in"?"in":prev.unit)}}
+  const dittoSpace=work.match(/^\s*(["'″〃]+|11)\s+(\d+(?:\.\d+)?)\s*$/);
+  const dittoSpace2=work.match(/^\s*(\d+(?:\.\d+)?)\s+(["'″〃]+|11)\s*$/);
+  if(dittoSpace)return{qty,l:prev.l,w:Number(dittoSpace[2]),unit:prev.unit};
+  if(dittoSpace2)return{qty,l:Number(dittoSpace2[1]),w:prev.w,unit:prev.unit};
+ }
+ const fiGlobal=work.match(/(\d+)\s*'\s*(\d+(?:\.\d+)?)?\s*"?\s*[xX]\s*(\d+)\s*'\s*(\d+(?:\.\d+)?)?\s*"?/);
+ if(fiGlobal){const l=feetInchToInches(fiGlobal[1],fiGlobal[2]||0),w=feetInchToInches(fiGlobal[3],fiGlobal[4]||0);if(l>0&&w>0)return{qty,l,w,unit:"in"}}
+ const pair=work.match(/(\d+(?:\.\d+)?)\s*(in|ft|'|")?\s*[xX]\s*(\d+(?:\.\d+)?)\s*(in|ft|'|")?/);
+ if(pair){let l=Number(pair[1]),w=Number(pair[3]);const hinted=pair[2]==="in"||pair[4]==="in"?"in":(pair[2]==="ft"||pair[4]==="ft"||/\bft\b/i.test(work)?"ft":(/\bin\b/.test(work)?"in":null));if(pair[2]==="'")l=feetInchToInches(pair[1],0);if(pair[4]==="'")w=feetInchToInches(pair[3],0);const unit=(pair[2]==="'"||pair[4]==="'")?"in":guessUnit(l,w,hinted,mode);if(l>0&&w>0&&l<400&&w<400){if(prev&&l===11&&w===11)return copyPrev(prev,qty);if(prev&&l===11)return{qty,l:prev.l,w,unit:prev.unit||unit};if(prev&&w===11)return{qty,l,w:prev.w,unit:prev.unit||unit};return{qty,l,w,unit}}}
+ const nums=[];const re=/(\d+)\s*'\s*(\d+(?:\.\d+)?)?\s*"?|(\d+(?:\.\d+)?)\s*(in|ft|")?/g;let m;while((m=re.exec(work))!==null){if(m[1]!=null)nums.push({value:feetInchToInches(m[1],m[2]||0),unit:"in"});else nums.push({value:Number(m[3]),unit:m[4]==='"'?"in":(m[4]||null)})}
+ if(nums.length>=2){let a,b;if(nums.length>=3&&nums[0].value<=80&&nums[1].value>=8&&nums[2].value>=8){a=nums[1];b=nums[2]}else{a=nums[nums.length-2];b=nums[nums.length-1]}const hinted=a.unit||b.unit||(/\bft\b/i.test(work)?"ft":null);const unit=guessUnit(a.value,b.value,hinted,mode);if(a.value>0&&b.value>0&&a.value<400&&b.value<400){if(prev&&a.value===11&&b.value===11)return copyPrev(prev,qty);if(prev&&a.value===11)return{qty,l:prev.l,w:b.value,unit:prev.unit};if(prev&&b.value===11)return{qty,l:a.value,w:prev.w,unit:prev.unit};return{qty,l:a.value,w:b.value,unit}}}return null}
+function rowArea(qty,l,w,unit){qty=Number(qty)||0;l=Number(l)||0;w=Number(w)||0;return qty*(unit==="ft"?(l*w):(l*w)/144)}
+function addRow(qty,l,w,unit){const tr=document.createElement("tr");const n=globalRowCount++;tr.innerHTML=`<td class="row-no">${n}</td><td><input type="number" class="qty" min="1" step="1" value="${qty||1}" oninput="recalculate()"></td><td><input type="number" class="length-input" min="0" step="0.01" value="${l}" oninput="recalculate()"></td><td><input type="number" class="width-input" min="0" step="0.01" value="${w}" oninput="recalculate()"></td><td><select class="unit-input" onchange="recalculate()"><option value="in"${unit==="in"?" selected":""}>in</option><option value="ft"${unit==="ft"?" selected":""}>ft</option></select></td><td class="row-area">0.00</td><td><button class="del" onclick="deleteRow(this)">×</button></td>`;document.querySelector("#resultsTable tbody").appendChild(tr);recalculate()}
+function deleteRow(btn){btn.closest("tr").remove();renumber();recalculate()}
+function renumber(){document.querySelectorAll("#resultsTable tbody tr").forEach((row,i)=>{row.querySelector(".row-no").textContent=i+1});globalRowCount=document.querySelectorAll("#resultsTable tbody tr").length+1}
+function parseDataAndAppend(text){const mode=document.getElementById("unitMode").value;const lines=normalizeText(text).split(/\n+/);let found=0,prev=null;lines.forEach(line=>{const parsed=parseMeasurementLine(line,mode,prev);if(!parsed)return;addRow(parsed.qty,+parsed.l.toFixed(2),+parsed.w.toFixed(2),parsed.unit);prev=parsed;found++});return found}
+function recalculate(){const rows=document.querySelectorAll("#resultsTable tbody tr");let total=0,pieces=0;rows.forEach(row=>{const qty=parseFloat(row.querySelector(".qty").value)||0,l=parseFloat(row.querySelector(".length-input").value)||0,w=parseFloat(row.querySelector(".width-input").value)||0,unit=row.querySelector(".unit-input").value,area=rowArea(qty,l,w,unit);row.querySelector(".row-area").textContent=area.toFixed(2);total+=area;pieces+=qty});document.getElementById("totalSqFt").textContent=total.toFixed(2);document.getElementById("rowMeta").textContent=`${rows.length} line${rows.length===1?"":"s"} · ${pieces} piece${pieces===1?"":"s"}`}
+async function processImages(){const imageInput=document.getElementById("imageInput"),statusDiv=document.getElementById("status"),processBtn=document.getElementById("processBtn");if(!imageInput.files||!imageInput.files.length){alert("Select at least one photo of a measurement sheet.");return}const files=Array.from(imageInput.files);processBtn.disabled=true;statusDiv.style.color="#1d4ed8";let added=0;try{for(let i=0;i<files.length;i++){statusDiv.textContent=`Scanning image ${i+1} of ${files.length}…`;const result=await Tesseract.recognize(files[i],"eng");const text=result.data.text||"";rawOcrLog.push(`--- Image ${i+1}: ${files[i].name} ---\n${text}`);statusDiv.textContent=`Reading numbers from image ${i+1}…`;added+=parseDataAndAppend(text)}document.getElementById("ocrText").textContent=rawOcrLog.join("\n\n");document.getElementById("ocrBox").style.display="block";statusDiv.style.color=added?"#15803d":"#b45309";statusDiv.textContent=added?`Done. Added ${added} row(s). Correct any missed L / W / unit below.`:"Scan finished but no L × W pairs were found. Add rows by hand or check Raw OCR."}catch(err){statusDiv.style.color="#b91c1c";statusDiv.textContent="Error reading image: "+err.message}finally{processBtn.disabled=false;imageInput.value=""}}
+function clearData(){if(!confirm("Clear all rows and OCR text?"))return;document.querySelector("#resultsTable tbody").innerHTML="";globalRowCount=1;rawOcrLog=[];document.getElementById("ocrText").textContent="";document.getElementById("ocrBox").style.display="none";document.getElementById("status").textContent="Cleared. Ready for new sheets.";document.getElementById("status").style.color="#57534e";recalculate()}
+function istDateString(){return new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Kolkata",year:"numeric",month:"2-digit",day:"2-digit"}).format(new Date())}
+function collectRows(){const rows=[];document.querySelectorAll("#resultsTable tbody tr").forEach((row,index)=>{const qty=parseFloat(row.querySelector(".qty").value)||0,l=parseFloat(row.querySelector(".length-input").value)||0,w=parseFloat(row.querySelector(".width-input").value)||0,unit=row.querySelector(".unit-input").value;rows.push({pcs:index+1,qty,l,w,unit,area:rowArea(qty,l,w,unit)})});return rows}
+function exportToPDF(){const data=collectRows();if(!data.length){alert("No rows to export. Scan a sheet or add a row first.");return}const {jsPDF}=window.jspdf,doc=new jsPDF("p","mm","a4"),customer=document.getElementById("customer").value.trim();doc.setFont("helvetica","bold");doc.setFontSize(20);doc.text("Vedam Granites",14,18);doc.setFont("helvetica","normal");doc.setFontSize(10);doc.text("E30, RIICO Industrial Area, Baggad, Rajasthan 313331",14,25);doc.setFont("helvetica","bold");doc.setFontSize(13);doc.text("GRANITE MEASUREMENT SHEET",14,35);doc.setFont("helvetica","normal");doc.setFontSize(11);doc.text(istDateString(),14,42);if(customer)doc.text(customer,14,48);const body=data.map(r=>[r.pcs,r.qty,r.l,r.w,r.unit,r.area.toFixed(2)]);const total=data.reduce((s,r)=>s+r.area,0),pieces=data.reduce((s,r)=>s+r.qty,0);body.push(["",pieces,"","","TOTAL",total.toFixed(2)]);doc.autoTable({startY:customer?54:52,head:[["#","Qty","L","W","Unit","Area sq.ft"]],body,theme:"grid",headStyles:{fillColor:[28,25,23],textColor:255,halign:"center"},bodyStyles:{halign:"center"},didParseCell:function(hook){if(hook.section==="body"&&hook.row.index===body.length-1){hook.cell.styles.fontStyle="bold";hook.cell.styles.fillColor=[231,229,228]}}});const y=doc.lastAutoTable.finalY+14,drawY=y>270?(doc.addPage(),20):y;doc.setFont("helvetica","bold");doc.setFontSize(14);doc.text("TOTAL",14,drawY);doc.text(`${total.toFixed(2)} sq.ft`,14,drawY+8);const safeName=(customer||"sheet").replace(/[^\w\-]+/g,"_").slice(0,40);doc.save(`Vedam_Granites_${safeName}_${istDateString()}.pdf`)}
 </script>
 </body>
 </html>
