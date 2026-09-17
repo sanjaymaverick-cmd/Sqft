@@ -9,16 +9,23 @@ Native wrapper around the same measurement calculator:
 Package: `com.vedamgranites.sqft`
 Min Android: 8.0 (API 26)
 
-## Build an APK (Android Studio)
+## Download APK from GitHub Actions
+
+1. Open [Actions → Build APK](https://github.com/sanjaymaverick-cmd/Sqft/actions/workflows/android.yml)
+2. Click **Run workflow** (or wait for the latest green run on `main`)
+3. Open the finished run → **VedamSqFt-debug** artifact → download the zip
+4. Unzip `app-debug.apk` and install on the phone (allow Unknown sources)
+
+The workflow copies root `index.html` into `android/app/src/main/assets/` then runs `gradle assembleDebug`.
+
+## Build locally (Android Studio)
 
 1. Install [Android Studio](https://developer.android.com/studio)
 2. File → Open → the `android` folder in this repo
-3. Let Gradle sync
-4. Connect a phone with USB debugging, or use an emulator
-5. Run ▶
-6. To share the installer: **Build → Generate Signed App Bundle or APK → APK**
+3. Copy root `index.html` into `android/app/src/main/assets/index.html`
+4. Run ▶ or **Build → Generate Signed App Bundle or APK**
 
-First scan needs internet (Tesseract OCR + PDF libraries load from CDN). After that, the screen itself is local.
+First scan needs internet (Tesseract OCR + PDF libraries load from CDN).
 
 ## Use on the floor
 
