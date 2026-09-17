@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Theme.VedamSqFt" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">#1C1917</item>
+        <item name="colorPrimaryVariant">#1C1917</item>
+        <item name="colorOnPrimary">#FAFAF9</item>
+        <item name="android:statusBarColor">#1C1917</item>
+        <item name="android:navigationBarColor">#1C1917</item>
+    </style>
+</resources>
